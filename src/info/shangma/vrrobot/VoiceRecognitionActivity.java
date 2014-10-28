@@ -23,8 +23,7 @@ import android.widget.ToggleButton;
 public class VoiceRecognitionActivity extends Activity implements RecognitionListener {
 	
 	private TextView returnedText;
-	private ToggleButton toggleButton;
-	private ProgressBar progressBar;
+	
 	private SpeechRecognizer speech = null;
 	private Intent recognizerIntent;
 	private String LOG_TAG = "VoiceRecognitionActivity";
@@ -50,10 +49,6 @@ public class VoiceRecognitionActivity extends Activity implements RecognitionLis
 		setContentView(R.layout.activity_voice_recognition);
 		
 		returnedText = (TextView) findViewById(R.id.textView1);
-		progressBar = (ProgressBar) findViewById(R.id.progressBar1);
-		toggleButton = (ToggleButton) findViewById(R.id.toggleButton1);
-
-		progressBar.setVisibility(View.INVISIBLE);
 		
 		// initialize the SpeechRecognizer object
 		speech = SpeechRecognizer.createSpeechRecognizer(this);
@@ -66,32 +61,7 @@ public class VoiceRecognitionActivity extends Activity implements RecognitionLis
 		recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
 				RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
 		recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);
-		
-
-		toggleButton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
-				// TODO Auto-generated method stub
-				if (isChecked) {
-					progressBar.setVisibility(View.VISIBLE);
-					progressBar.setIndeterminate(true);
-					speech.startListening(recognizerIntent);
-					
-					detectTime = SystemClock.uptimeMillis();
-					customHandler.postDelayed(updateTimerThread, 0);
-					
-				} else {
-					progressBar.setIndeterminate(false);
-					progressBar.setVisibility(View.INVISIBLE);
-					speech.stopListening();
-					
-					customHandler.removeCallbacks(updateTimerThread);
-				}
-			}
-		});
-		
+				
 		speech.startListening(recognizerIntent);
 		
 		detectTime = SystemClock.uptimeMillis();
@@ -138,8 +108,6 @@ public class VoiceRecognitionActivity extends Activity implements RecognitionLis
 	public void onBeginningOfSpeech() {
 		// TODO Auto-generated method stub
 		Log.i(LOG_TAG, "onBeginningOfSpeech");
-		progressBar.setIndeterminate(false);
-		progressBar.setMax(10);
 		
 		currentStatus = PROCESSING;
 		customHandler.removeCallbacks(updateTimerThread);
@@ -150,7 +118,6 @@ public class VoiceRecognitionActivity extends Activity implements RecognitionLis
 	public void onRmsChanged(float rmsdB) {
 		// TODO Auto-generated method stub
 		//Log.i(LOG_TAG, "onRmsChanged: " + rmsdB);
-		progressBar.setProgress((int) rmsdB);
 	}
 
 	@Override
@@ -163,8 +130,6 @@ public class VoiceRecognitionActivity extends Activity implements RecognitionLis
 	public void onEndOfSpeech() {
 		// TODO Auto-generated method stub
 		Log.i(LOG_TAG, "onEndOfSpeech");
-		progressBar.setIndeterminate(true);
-		toggleButton.setChecked(false);
 	}
 
 	@Override
@@ -173,7 +138,6 @@ public class VoiceRecognitionActivity extends Activity implements RecognitionLis
 		String errorMessage = getErrorText(error);
 		Log.d(LOG_TAG, "FAILED " + errorMessage);
 		returnedText.setText(errorMessage);
-		toggleButton.setChecked(false);
 	}
 
 	@Override

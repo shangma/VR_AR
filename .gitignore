@@ -55,7 +55,6 @@ project.properties
 res/drawable-hdpi/ic_launcher.png
 res/drawable-mdpi/ic_launcher.png
 res/drawable-xhdpi/ic_launcher.png
-res/layout/activity_voice_recognition.xml
 res/menu/voice_recognition.xml
 res/values-v11/styles.xml
 res/values-v14/styles.xml
@@ -63,3 +62,11 @@ res/values-w820dp/dimens.xml
 res/values/dimens.xml
 res/values/strings.xml
 res/values/styles.xml
+*.apk
+*.ap_
+*.dex
+*.jar
+*.cache
+bin/res/crunch/drawable-hdpi/ic_launcher.png
+bin/res/crunch/drawable-mdpi/ic_launcher.png
+bin/res/crunch/drawable-xhdpi/ic_launcher.png
