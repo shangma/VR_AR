@@ -1,6 +1,7 @@
 package info.shangma.vrrobot;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -18,9 +19,12 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.TextToSpeech.OnInitListener;
 
-public class VoiceRecognitionActivity extends Activity implements RecognitionListener {
+public class VoiceRecognitionActivity extends Activity implements RecognitionListener, OnInitListener {
 	
 	private TextView returnedText;
 	
@@ -38,10 +42,15 @@ public class VoiceRecognitionActivity extends Activity implements RecognitionLis
 	private static final int DETECTING = 0;
 	private static final int PROCESSING = 1;
 	
-	private static final int DETECTING_INTERVAL = 6000;
+	private static final int DETECTING_INTERVAL = 8000;
 	private static final int SLEEPING_INTERVAL = 2000;
 	
 	private int currentStatus = SLEEPING;
+	
+	// TTS
+	private int MY_DATA_CHECK_CODE = 0;
+	private TextToSpeech mTTS;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +71,12 @@ public class VoiceRecognitionActivity extends Activity implements RecognitionLis
 				RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
 		recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);
 				
-		speech.startListening(recognizerIntent);
+		returnedText.setText(" 1. hello  \n 2. how are you doing \n 3. what is your name \n");
 		
-		detectTime = SystemClock.uptimeMillis();
-		customHandler.postDelayed(updateTimerThread, 0);
-		currentStatus = DETECTING;
+		// TTS
+		
+		mTTS = new TextToSpeech(this, this);
+
 	}
 
 	@Override
@@ -76,6 +86,11 @@ public class VoiceRecognitionActivity extends Activity implements RecognitionLis
 		if (speech != null) {
 			speech.destroy();
 			Log.i(LOG_TAG, "destroy");
+		}
+		
+		if (mTTS != null) {
+			mTTS.stop();
+			mTTS.shutdown();
 		}
 	}
 
@@ -148,17 +163,32 @@ public class VoiceRecognitionActivity extends Activity implements RecognitionLis
 				.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
 		String text = "";
 		if (matches.size() != 0) {
-			for (String result : matches)
-				text += result + "\n";
-
-			returnedText.setText(text);
+			int i=0;
+			for (; i<matches.size(); i++) {
+				String result = matches.get(i);
+				if (result.equals("hello")) {
+					speakWords("hello back");
+					break;
+				} else if (result.equals("how are you doing")) {
+					speakWords("I am doing ok");
+					break;
+				} else if (result.equals("what is your name")) {
+					speakWords("I don't have a name yet");
+					break;
+				} else {
+					Log.i(LOG_TAG, "result: " + result);
+				}
+			}
+			if (i >= matches.size()) {
+				speakWords("I don't understand");
+			}
 		}
 		
 		
-		detectTime = SystemClock.uptimeMillis();
+		sleepTime = SystemClock.uptimeMillis();
 		
 		customHandler.postDelayed(updateTimerThread, 0);
-		currentStatus = DETECTING;
+		currentStatus = SLEEPING;
 	}
 
 	@Override
@@ -246,4 +276,24 @@ public class VoiceRecognitionActivity extends Activity implements RecognitionLis
 			customHandler.postDelayed(this, 0);
 		}
 	};
+	
+	private void speakWords(String speech) {
+		mTTS.speak(speech, TextToSpeech.QUEUE_FLUSH, null);
+	}
+
+	
+	@Override
+	public void onInit(int status) {
+		// TODO Auto-generated method stub
+		
+		speakWords("Welcome");
+		
+		speech.startListening(recognizerIntent);
+		
+		detectTime = SystemClock.uptimeMillis();
+		customHandler.postDelayed(updateTimerThread, 0);
+		currentStatus = DETECTING;
+		
+		
+	}
 }
