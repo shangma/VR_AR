@@ -42,8 +42,8 @@ public class VoiceRecognitionActivity extends Activity implements RecognitionLis
 	private static final int DETECTING = 0;
 	private static final int PROCESSING = 1;
 	
-	private static final int DETECTING_INTERVAL = 8000;
-	private static final int SLEEPING_INTERVAL = 2000;
+	private static final int DETECTING_INTERVAL = 9000;
+	private static final int SLEEPING_INTERVAL = 2500;
 	
 	private int currentStatus = SLEEPING;
 	
@@ -70,7 +70,7 @@ public class VoiceRecognitionActivity extends Activity implements RecognitionLis
 		recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
 				RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH);
 		recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3);
-				
+
 		returnedText.setText(" 1. hello  \n 2. how are you doing \n 3. what is your name \n");
 		
 		// TTS
@@ -286,7 +286,7 @@ public class VoiceRecognitionActivity extends Activity implements RecognitionLis
 	public void onInit(int status) {
 		// TODO Auto-generated method stub
 		
-		speakWords("Welcome");
+		//speakWords("Welcome");
 		
 		speech.startListening(recognizerIntent);
 		
