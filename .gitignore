@@ -41,3 +41,25 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+*.class
+*.classpath
+bin/AndroidManifest.xml
+bin/R.txt
+gen/android/support/v7/appcompat/R.java
+gen/info/shangma/vrrobot/BuildConfig.java
+gen/info/shangma/vrrobot/R.java
+libs/android-support-v4.jar
+proguard-project.txt
+project.properties
+res/drawable-hdpi/ic_launcher.png
+res/drawable-mdpi/ic_launcher.png
+res/drawable-xhdpi/ic_launcher.png
+res/layout/activity_voice_recognition.xml
+res/menu/voice_recognition.xml
+res/values-v11/styles.xml
+res/values-v14/styles.xml
+res/values-w820dp/dimens.xml
+res/values/dimens.xml
+res/values/strings.xml
+res/values/styles.xml
